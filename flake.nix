@@ -36,7 +36,8 @@
               # Python plus helper tools
               (python.withPackages (ps: with ps; [
                 pip # The pip installer
-                pyglet
+                pygame
+                numpy
               ]))
             ];
 
