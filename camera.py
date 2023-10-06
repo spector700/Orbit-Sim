@@ -1,32 +1,38 @@
-from sprites import Stars,Earth
-from numpy.random import uniform
+from sprites import Stars, Earth
 import pygame
 
+
 class CameraGroup(pygame.sprite.Group):
+
     """
     SPRITE GROUP SUBCLASS TO HANDLE MOUSE INPUTS AS OFFSETS FOR A 'CAMERA'
         - CLICK AND DRAG CAMERA
         - SCROLL WHEEL ZOOM
         - SPACE BAR TO RESET POSITIONS
     """
+
     def __init__(self):
         super().__init__()
-        self.offset = pygame.math.Vector2() #TO APPLY TO SPRITES
-        self.clickstart_offset = pygame.math.Vector2() #NORMALISE AFTER CLICK
-        self.dragging = False #WHEN TO APPLY OFFSET TO SPRITES
+        self.offset = pygame.math.Vector2()  # TO APPLY TO SPRITES
+        self.clickstart_offset = pygame.math.Vector2()  # NORMALISE AFTER CLICK
+        self.dragging = False
+        self.incriment_up = 1.41
+        self.incriment_down = 0.7
         self.reset_scales()
 
     def reset_scales(self):
-        self.offset.x = 0
-        self.offset.y = 0
-        self.scale_size = 0
+        # self.offset.x = 0
+        # self.offset.y = 0
+        self.scale_size = 0.8
+        # self.scale_velocity = 0.001
+        # self.scale_distance = 0.001
 
     def scale(self, direction):
         self.offset.x *= direction
         self.offset.y *= direction
         self.scale_size *= direction
-        self.scale_velocity *= direction
-        self.scale_distance *= direction
+        # self.scale_velocity *= direction
+        # self.scale_distance *= direction
 
     def mouse_camera(self, event):
         # If left mouse button was pressed
@@ -48,11 +54,22 @@ class CameraGroup(pygame.sprite.Group):
                 self.offset.x = mouse_x + self.clickstart_offset.x
                 self.offset.y = mouse_y + self.clickstart_offset.y
 
-    def create_sprites(self):
+        # If Mouse wheel UP
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 4:
+            self.scale(self.incriment_up)
+
+        # If Mouse wheel DOWN
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 5:
+            self.scale(self.incriment_down)
+
+        # If SPACE was pressed
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            self.reset_scales()
+
+    def create_sprites(self, amount):
         # Create all the Stars
-        for i in range(2000):
+        for _ in range(amount):
             Stars(self)
+
         # Create the Earth
         Earth(self)
-
-
