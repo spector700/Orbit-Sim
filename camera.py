@@ -1,5 +1,6 @@
-from sprites import Stars, Earth
 import pygame
+
+from sprites import Earth, Stars
 
 
 class CameraGroup(pygame.sprite.Group):
