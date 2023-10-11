@@ -3,38 +3,36 @@ from sys import exit
 import pygame
 from pygame.locals import KEYDOWN, K_ESCAPE, K_f
 
-from camera import CameraGroup
-
 WIDTH = 800
 HEIGHT = 800
-STARS = 1000
+STARS = 2000
 
 
 pygame.init()
 
+from camera import CameraGroup
+
 # Set up the drawing window
 screen = pygame.display.set_mode([WIDTH, HEIGHT])
+trace = pygame.Surface((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 font = pygame.font.SysFont("monospace", 25)
 
 # Inistiallize Camera
-visible = CameraGroup()
+group = CameraGroup()
 
-# Create all the sprites with the amount of stars
-visible.create_sprites(STARS)
+# Create all the sprites with the amount of Stars
+group.create_sprites(STARS, WIDTH / 2, HEIGHT / 2)
 
 
 def run():
     fps = False
     # Run until the user asks to quit
     while True:
-        clock.tick(120)
-
-        pygame.transform.rotozoom(screen, 120.5, 0.5)
-        visible.update()
-        pygame.display.update()
+        clock.tick(60)
 
         screen.fill("black")
+        group.update()
 
         # Event loop
         for event in pygame.event.get():
@@ -50,12 +48,14 @@ def run():
             elif event.type == KEYDOWN and event.key == K_f and not fps:
                 fps = True
 
-            visible.mouse_camera(event)
+            group.mouse_camera(event)
 
         # Show FPS if 'f' was pressed
         if fps:
             text = font.render("FPS: " + str(round(clock.get_fps())), True, "white")
             screen.blit(text, (0, 0))
+
+        pygame.display.update()
 
 
 if __name__ == "__main__":

@@ -1,6 +1,8 @@
+from numpy.random import uniform
 import pygame
+from pygame.math import Vector2 as vec2
 
-from sprites import Earth, Stars
+from sprites import Stars, Bodies
 
 
 class CameraGroup(pygame.sprite.Group):
@@ -22,8 +24,8 @@ class CameraGroup(pygame.sprite.Group):
         self.reset_scales()
 
     def reset_scales(self):
-        # self.offset.x = 0
-        # self.offset.y = 0
+        self.offset.x = 0
+        self.offset.y = 0
         self.scale_size = 0.8
         # self.scale_velocity = 0.001
         # self.scale_distance = 0.001
@@ -67,10 +69,37 @@ class CameraGroup(pygame.sprite.Group):
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             self.reset_scales()
 
-    def create_sprites(self, amount):
+        # Spawn satellite with right mouse button
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            Bodies(
+                self,
+                pos=vec2(mouse_x - self.offset.x, mouse_y - self.offset.y),
+                radius=9,
+                mass=2000,
+                vel=vec2(1370, 100),
+            )
+
+    def create_sprites(self, amount, width, height):
         # Create all the Stars
         for _ in range(amount):
             Stars(self)
 
-        # Create the Earth
-        Earth(self)
+        Bodies(
+            self,
+            pos=vec2(width, height),
+            radius=100,
+            color="#6b93d6",
+            mass=5.97219e24,
+            vel=vec2(-24.947719394204714 / 2, 0),
+            protected=True,
+        )
+        Bodies(
+            self,
+            pos=vec2(width, height / 3),
+            radius=20,
+            color="gray",
+            mass=7.349e22,
+            vel=vec2(1023, 0),
+            protected=True,
+        )
