@@ -38,6 +38,7 @@
                 pip # The pip installer
                 pygame
                 numpy
+                pytest
               ]))
             ];
 
