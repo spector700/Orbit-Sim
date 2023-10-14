@@ -1,15 +1,13 @@
 import pygame
 from numpy.random import choice, uniform
 from pygame.math import Vector2 as vec2
+from spritesheet import Explosion
 import math
-
-font = pygame.font.SysFont("monospace", 25)
 
 
 class Stars(pygame.sprite.Sprite):
     def __init__(self, sprite_group):
         super().__init__(sprite_group)
-        self.sprite_group = sprite_group
         star_colors = [
             "lightblue",
             "white",
@@ -29,13 +27,13 @@ class Stars(pygame.sprite.Sprite):
 
         self.size = uniform(1, 1.2)
 
-    def update(self):
-        self.draw()
+    def update(self, camera_group):
+        self.draw(camera_group)
 
-    def draw(self):
+    def draw(self, camera_group):
         pos = (
-            self.x + self.sprite_group.offset.x * 0.1 * self.size,
-            self.y + self.sprite_group.offset.y * 0.1 * self.size,
+            self.x + camera_group.offset.x * 0.1 * self.size,
+            self.y + camera_group.offset.y * 0.1 * self.size,
         )
         pygame.draw.circle(self.surface, self.color, pos, self.size)
 
@@ -61,7 +59,6 @@ class Bodies(pygame.sprite.Sprite):
         protected=False,
     ):
         super().__init__(sprite_group)
-        self.sprite_group = sprite_group
         self.orbit = []
         self.width, self.height = pygame.display.get_surface().get_size()
         self.surface = pygame.display.get_surface()
@@ -90,7 +87,9 @@ class Bodies(pygame.sprite.Sprite):
         self.pos.y += self.vel.y * self.DT
         self.orbit.append((self.pos.x, self.pos.y))
 
-    def update(self):
+    def update(self, camera_group, animation_group):
+        self.animation_group = animation_group
+        self.camera_group = camera_group
         # Calculate forces between all pairs of bodies
         for body1 in self._instances:
             # Reset the total forces acting on each body to zero
@@ -131,10 +130,14 @@ class Bodies(pygame.sprite.Sprite):
 
     def delete(self, body):
         if body.protected == False:
+            explosion = Explosion("assets/explosion.png")
+            self.animation_group.add(explosion)
+            explosion.animate(body.pos)
             body.kill()
+            self._instances.remove(body)
 
     def draw(self):
-        self.zoom = self.radius * self.sprite_group.scale_size
+        self.zoom = self.radius * self.camera_group.scale_size
 
         x = self.pos.x * self.SCALE + self.width / 2
         y = self.pos.y * self.SCALE + self.height / 2
@@ -142,12 +145,17 @@ class Bodies(pygame.sprite.Sprite):
         # Orbit lines
         if len(self.orbit) > 2:
             updated_points = []
-            max_points = 480
+
+            # Shorter orbit for satellites
+            if self.protected:
+                max_points = 480
+            else:
+                max_points = 200
 
             for point in self.orbit:
                 x, y = point
                 updated_points.append(
-                    (x + self.sprite_group.offset.x, y + self.sprite_group.offset.y)
+                    (x + self.camera_group.offset.x, y + self.camera_group.offset.y)
                 )
 
             if len(updated_points) > max_points:
@@ -157,8 +165,8 @@ class Bodies(pygame.sprite.Sprite):
 
         # Camera movement Calculation
         pos = (
-            self.pos.x + self.sprite_group.offset.x,
-            self.pos.y + self.sprite_group.offset.y,
+            self.pos.x + self.camera_group.offset.x,
+            self.pos.y + self.camera_group.offset.y,
         )
         pygame.draw.circle(
             surface=self.surface,
