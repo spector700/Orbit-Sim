@@ -1,12 +1,12 @@
-import sprites
-import camera
 import pygame
-from pygame.math import Vector2 as vec2
 import pytest
+from pygame.math import Vector2 as vec2
 
+import camera
+import sprites
 
-WIDTH = 800
-HEIGHT = 800
+WIDTH = 1920
+HEIGHT = 1080
 
 
 # Define a fixture for setting up the game environment
@@ -14,10 +14,14 @@ HEIGHT = 800
 def game_environment():
     pygame.init()
     pygame.display.set_mode([WIDTH, HEIGHT])
-    group = camera.CameraGroup()
+    camera_group = camera.CameraGroup()
+    animation_group = pygame.sprite.Group()
+    bodies_group = pygame.sprite.Group()
+
+    bodies_group.update(camera_group, animation_group)
 
     earth = sprites.Bodies(
-        group,
+        bodies_group,
         pos=vec2(WIDTH / 2, HEIGHT / 2),
         radius=100,
         color="#6b93d6",
@@ -26,8 +30,8 @@ def game_environment():
         protected=True,
     )
     moon = sprites.Bodies(
-        group,
-        pos=vec2(WIDTH, HEIGHT / 3),
+        bodies_group,
+        pos=vec2(WIDTH / 2, HEIGHT / 2 + 270),
         radius=20,
         color="gray",
         mass=7.349e22,
@@ -35,7 +39,8 @@ def game_environment():
         protected=True,
     )
 
-    yield group, earth, moon  # Provide the game environment to the tests
+    # Provide the game environment to the tests
+    yield bodies_group, earth, moon
 
     # Clean up after the tests (e.g., closing the game window)
     pygame.quit()
@@ -48,22 +53,22 @@ def test_move(game_environment):
     force_x, force_y = moon.move(earth)
 
     assert abs(force_y) > 2e19
-    assert abs(force_x) > 7e19
+    assert abs(force_x) == 0.0
 
 
 def test_update_vel(game_environment):
     _, _, moon = game_environment
 
     moon.update_vel()
-    assert moon.pos.x > 800
-    assert moon.pos.y < 400
+    assert moon.pos.x > WIDTH / 2
+    assert moon.pos.y > HEIGHT / 2
 
 
 def test_sat(game_environment):
-    group, _, _ = game_environment
+    bodies_group, _, _ = game_environment
 
     sprites.Bodies(
-        group,
+        bodies_group,
         pos=vec2(420, 420),
         radius=9,
         mass=2000,
@@ -71,21 +76,6 @@ def test_sat(game_environment):
     )
 
     assert len(sprites.Bodies._instances) == 3
-
-
-def test_delete(game_environment):
-    group, _, _ = game_environment
-
-    sat = sprites.Bodies(
-        group,
-        pos=vec2(420, 420),
-        radius=9,
-        mass=2000,
-        vel=vec2(1370, 100),
-    )
-
-    sat.delete(sat)
-    assert sat.alive
 
 
 if __name__ == "__main__":

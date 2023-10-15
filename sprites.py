@@ -1,8 +1,10 @@
+import math
+
 import pygame
 from numpy.random import choice, uniform
 from pygame.math import Vector2 as vec2
+
 from spritesheet import Explosion
-import math
 
 
 class Stars(pygame.sprite.Sprite):
@@ -129,7 +131,7 @@ class Bodies(pygame.sprite.Sprite):
         return force_x, force_y
 
     def delete(self, body):
-        if body.protected == False:
+        if body.protected is False:
             explosion = Explosion("assets/explosion.png")
             self.animation_group.add(explosion)
             explosion.animate(body.pos)

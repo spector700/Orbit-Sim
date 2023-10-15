@@ -1,13 +1,14 @@
 from sys import exit
 
 import pygame
-from pygame.locals import KEYDOWN, K_ESCAPE, MOUSEBUTTONDOWN, K_f
-from camera import CameraGroup
-from sprites import Stars, Bodies
+from pygame.locals import K_ESCAPE, KEYDOWN, MOUSEBUTTONDOWN, K_f
 from pygame.math import Vector2 as vec2
 
-WIDTH = 800
-HEIGHT = 800
+from camera import CameraGroup
+from sprites import Bodies, Stars
+
+WIDTH = 1920
+HEIGHT = 1080
 STARS = 2000
 
 
@@ -41,8 +42,8 @@ Bodies(
 )
 Bodies(
     bodies_group,
-    pos=vec2(WIDTH / 2, HEIGHT / 2 / 3),
-    radius=20,
+    pos=vec2(WIDTH / 2, HEIGHT / 2 + 270),
+    radius=30,
     color="gray",
     mass=7.349e22,
     vel=vec2(1023, 0),
@@ -50,6 +51,11 @@ Bodies(
 )
 
 animation_group = pygame.sprite.Group()
+
+music = pygame.mixer.Sound("assets/interstellar-music.mp3")
+
+music.set_volume(0.1)
+music.play(-1, fade_ms=2000)
 
 
 def run():
@@ -83,8 +89,8 @@ def run():
                         mouse_x - camera_group.offset.x, mouse_y - camera_group.offset.y
                     ),
                     radius=9,
-                    mass=2000,
-                    vel=vec2(1370, 100),
+                    mass=1500,
+                    vel=vec2(1450, 50),
                 )
 
             if event.type == KEYDOWN and event.key == K_f and fps:
