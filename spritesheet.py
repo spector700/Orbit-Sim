@@ -40,6 +40,11 @@ class Explosion(pygame.sprite.Sprite):
         self.play = True
         self.pos = pos
 
+        boom = pygame.mixer.Sound("assets/boom.wav")
+        boom.set_volume(0.3)
+        boom.fadeout(2)
+        boom.play(fade_ms=50)
+
     def update(self, speed, camera_group):
         if self.play:
             self.index += speed
