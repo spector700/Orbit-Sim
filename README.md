@@ -1,6 +1,7 @@
 # Pygame Orbit Simulation
 
-[![Video](https://i9.ytimg.com/vi_webp/ML5fOiTLlwk/mq2.webp?sqp=CPiBs6kG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGE4gSihyMA8=&rs=AOn4CLCZ9YhMfv_SPvM3yVTtxj7rNZHkVw)](https://www.youtube.com/watch?v=ML5fOiTLlwk)
+### Showcase
+[![Video](https://img.youtube.com/vi/ML5fOiTLlwk/0.jpg)](https://www.youtube.com/watch?v=ML5fOiTLlwk)
 
 ## About
 This is a Python pygame simulation of celestial bodies orbiting in space, created using the Pygame library. 
