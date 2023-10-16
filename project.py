@@ -54,7 +54,7 @@ animation_group = pygame.sprite.Group()
 
 music = pygame.mixer.Sound("assets/interstellar-music.mp3")
 
-music.set_volume(0.1)
+music.set_volume(0.3)
 music.play(-1, fade_ms=2000)
 
 
