@@ -9,6 +9,21 @@ It allows you to visualize the movement of planets, stars, and other celestial o
 Accurate mass and velocity are used for the calculations for the orbit.
 
 
+
+## Files
+
+- __project.py__: Initializes all the necessary classes, background music, sprite groups, and the main game loop.
+
+- __camera.py__: Contains the class responsible for camera panning and the calculation of camera offsets, which other classes use to obtain updated positions.
+
+- __sprites.py__: Includes the class for background stars, specifying their quantity, color, random positions, and sizes. This file also contains the "Bodies" class, which calculates the force of gravity, velocity, and interactions with other celestial bodies for Earth, the Moon, and satellites.
+
+- __spritesheet.py__: Features the class for extracting individual images from a spritesheet, adding them to a list, displaying images, and playing collision sounds. This class is called by the "Bodies" class and removes satellite instances upon collision.
+
+- __test_project.py__: This file is designed for testing the classes in a controlled game environment.
+
+
+
 ## Controls
 | Control               | Action                                       |
 |-----------------------|----------------------------------------------|
